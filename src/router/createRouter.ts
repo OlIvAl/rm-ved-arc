@@ -3,7 +3,10 @@ import browserPlugin from 'router5-plugin-browser';
 import loggerPlugin from 'router5-plugin-logger';
 import { RouterDependencies } from '../index';
 import { userInfoInitPlugin } from './plugins/onStart/userInfoInit';
-import { titleMiddleware } from './middlewares/title';
+import { titleMiddlewareFactory } from './middlewares/title';
+import { initStateMiddlewareFactory } from './middlewares/initState';
+import { paginationMiddlewareFactory } from './middlewares/pagination';
+import { filtrationMiddlewareFactory } from './middlewares/filtration';
 
 export const createRouter = (routes: Route[], dependencies: RouterDependencies): Router => {
   const router = createRouter5(routes, {
@@ -18,7 +21,12 @@ export const createRouter = (routes: Route[], dependencies: RouterDependencies):
     })
   );
 
-  router.useMiddleware(titleMiddleware);
+  router.useMiddleware(
+    titleMiddlewareFactory(routes),
+    initStateMiddlewareFactory(routes),
+    filtrationMiddlewareFactory(routes),
+    paginationMiddlewareFactory(routes),
+  );
 
   return router;
 };

@@ -1,15 +1,15 @@
-import { Middleware, MiddlewareFactory, Route } from 'router5/dist/types/router';
+import { MiddlewareFactory, Route } from 'router5/dist/types/router';
 import { RouterDependencies } from '../../index';
 import { findSegment } from './libs/findSegment';
 
-export const titleMiddlewareFactory =
+export const initStateMiddlewareFactory =
   (routes: Route<RouterDependencies>[]): MiddlewareFactory<RouterDependencies> =>
-    (): Middleware =>
+    (router) =>
       (toState, fromState, done) => {
         const segment = findSegment(toState.name, routes);
 
-        if (segment) {
-          document.title = (segment as any).title;
+        if (segment && (segment as any).initState) {
+          (segment as any).initState(toState.params, router.getDependencies());
         }
 
         done();

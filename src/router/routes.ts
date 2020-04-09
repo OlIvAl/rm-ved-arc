@@ -9,7 +9,7 @@ import { ClientCardState } from '../states/ClientCardState';
 
 export const routes = [
   {
-    name: 'index',
+    name: 'home',
     path: '/',
     forwardTo: 'articles'
   },
@@ -17,20 +17,24 @@ export const routes = [
     name: 'articles',
     path: '/articles',
     title: 'База знаний',
-    onActivate: async (params: any, { rootState }: RouterDependencies) => {
+    pagination: true,
+    filtration: true,
+    initState: async (params: any, { rootState }: RouterDependencies) => {
       const articlesInitService = new ArticlesInitService();
       const articlesListState = new ArticleListState(rootState.articleStore, articlesInitService);
 
       await articlesListState.init();
 
       return articlesListState;
-    }
+    },
   },
   {
     name: 'clients',
     path: '/clients',
     title: 'Клиенты',
-    onActivate: async (params: any, { rootState }: RouterDependencies) => {
+    pagination: true,
+    filtration: true,
+    initState: async (params: any, { rootState }: RouterDependencies) => {
       const clientsInitService = new ClientsInitService();
       const clientListState = new ClientListState(rootState.clientStore, clientsInitService);
 
@@ -42,7 +46,7 @@ export const routes = [
       {
         name: 'client',
         path: '/:id',
-        onActivate: async (params: IClientQueryParams, { rootState }: RouterDependencies) => {
+        initState: async (params: IClientQueryParams, { rootState }: RouterDependencies) => {
           const clientInitService = new ClientInitService();
           const clientCardState = new ClientCardState(rootState.clientStore, clientInitService);
 
